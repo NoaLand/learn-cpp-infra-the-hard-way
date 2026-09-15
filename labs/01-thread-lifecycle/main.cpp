@@ -11,6 +11,10 @@ int main() {
         greeting("worker");
     });
 
+    // Make sure that the code will print worker first and then main
+    // solution 1
+    worker.join();
+
     greeting("main");
 
     return 0;

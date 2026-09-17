@@ -11,7 +11,7 @@ void greeting(std::string_view name) {
 }
 
 int main() {
-    std::array<std::string, 3> worker_names{"a", "b", "c"};
+    std::array<std::string, 3> worker_names{"worker-a", "worker-b", "worker-c"};
     std::vector<std::jthread> thread_pool;
 
     std::latch work_done{worker_names.size()};
@@ -19,10 +19,10 @@ int main() {
     for (const auto& name : worker_names) {
         thread_pool.emplace_back(std::jthread{[&work_done, name](){
             using namespace std::chrono_literals;
-            greeting("worker-" + name);
+            greeting(name);
             work_done.count_down();
             std::this_thread::sleep_for(3s);
-            std::println("do more work from worker-{}", name);
+            std::println("do more work from {}", name);
         }});
     }
 

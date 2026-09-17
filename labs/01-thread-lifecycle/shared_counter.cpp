@@ -1,16 +1,20 @@
+#include <mutex>
 #include <print>
 #include <array>
 #include <string>
 #include <thread>
 #include <vector>
 
+
 int main() {
     int counter{};
+    std::mutex counter_mutex;
 
     std::array<std::string, 4> worker_names{"alpha", "beta", "charlie", "delta"};
-    auto worker = [&counter](std::string name){
+    auto worker = [&counter, &counter_mutex](std::string name){
         std::println("{} start working", name);
         for (int i = 0; i < 100000; ++i) {
+            std::lock_guard<std::mutex> lock_guard(counter_mutex);
             ++counter;
         }
         std::println("{} stop working", name);

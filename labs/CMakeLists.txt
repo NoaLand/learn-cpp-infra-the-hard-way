@@ -1,1 +1,1 @@
-add_subdirectory(01-thread-lifecycle)
+add_subdirectory(01_thread_lifecycle)

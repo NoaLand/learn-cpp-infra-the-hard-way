@@ -1,5 +1,4 @@
 #include <chrono>
-#include <numeric>
 #include <print>
 
 #include "labs/threads/shared_counter/unsafe_shared_int.h"

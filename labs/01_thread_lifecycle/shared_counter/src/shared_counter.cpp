@@ -8,11 +8,12 @@
 
 
 int main() {
-    std::println("Start unsafe shared int\n");
+    std::println("Start unsafe shared int");
     auto unsafe_shared_int_start_ = std::chrono::high_resolution_clock::now();
-    cpp_infra_labs::thread::shared_counter::unsafe_shared_int{}.run();
+    auto unsafe_shared_int_ = cpp_infra_labs::thread::shared_counter::unsafe_shared_int{};
+    unsafe_shared_int_.run();
     auto unsafe_shared_int_end_ = std::chrono::high_resolution_clock::now();
-    std::println("\nStop unsafe shared int\n");
+    std::println("Stop unsafe shared int with counter: {}\n", unsafe_shared_int_.counter);
 
     std::println("Start mutex per increment");
     auto mutex_per_increment_start_ = std::chrono::high_resolution_clock::now();

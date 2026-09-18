@@ -1,8 +1,9 @@
 #include <print>
 
-#include "labs/threads/shared_counter/atomic_shared_int.h"
 #include "labs/threads/shared_counter/unsafe_shared_int.h"
 #include "labs/threads/shared_counter/mutex_per_increment.h"
+#include "labs/threads/shared_counter/atomic_shared_int.h"
+#include "labs/threads/shared_counter/local_reduce.h"
 
 
 int main() {
@@ -20,6 +21,11 @@ int main() {
     auto atomic_shared_int_ = cpp_infra_labs::thread::shared_counter::atomic_shared_int{};
     atomic_shared_int_.run();
     std::println("\nStop atomic shared int\n");
+
+    std::println("Start local reduce\n");
+    auto local_reduce_ = cpp_infra_labs::thread::shared_counter::local_reduce{};
+    local_reduce_.run();
+    std::println("\nStop local reduce\n");
 
     return 0;
 }

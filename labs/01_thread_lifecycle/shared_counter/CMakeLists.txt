@@ -3,6 +3,7 @@ add_executable(learn_cpp_the_hard_way_lab_01_shared_counter
     src/unsafe_shared_int.cpp
     src/mutex_per_increment.cpp
     src/atomic_shared_int.cpp
+    src/local_reduce.cpp
 )
 
 target_include_directories(learn_cpp_the_hard_way_lab_01_shared_counter PUBLIC

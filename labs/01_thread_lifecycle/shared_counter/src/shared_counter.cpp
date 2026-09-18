@@ -1,5 +1,6 @@
 #include <print>
 
+#include "labs/threads/shared_counter/atomic_shared_int.h"
 #include "labs/threads/shared_counter/unsafe_shared_int.h"
 #include "labs/threads/shared_counter/mutex_per_increment.h"
 
@@ -14,6 +15,11 @@ int main() {
     auto mutex_per_increment_ = cpp_infra_labs::thread::shared_counter::mutex_per_increment{};
     mutex_per_increment_.run();
     std::println("\nStop mutex per increment\n");
+
+    std::println("Start atomic shared int\n");
+    auto atomic_shared_int_ = cpp_infra_labs::thread::shared_counter::atomic_shared_int{};
+    atomic_shared_int_.run();
+    std::println("\nStop atomic shared int\n");
 
     return 0;
 }

@@ -2,8 +2,12 @@
 
 #include "labs/threads/shared_counter/shared_counter.h"
 
+#include <mutex>
+
 namespace cpp_infra_labs::thread::shared_counter {
-    struct unsafe_shared_int : public shared_counter {
+    struct mutex_per_increment : public shared_counter {
         void run() override;
+    private:
+        std::mutex increment_mutex;
     };
 }

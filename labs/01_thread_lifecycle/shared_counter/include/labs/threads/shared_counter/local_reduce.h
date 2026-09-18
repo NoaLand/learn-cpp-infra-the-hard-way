@@ -10,6 +10,6 @@ namespace cpp_infra_labs::thread::shared_counter {
 
         int counter{};
     private:
-        void worker(std::string name, std::vector<int>& counter_for_each_thread, int index);
+        void worker(std::string name, std::vector<int>& counter_for_each_thread, std::size_t index);
     };
 }

@@ -34,9 +34,7 @@ void benchmark(std::string test_name, const std::function<void(const T&)>& asser
     std::vector<std::chrono::duration<double, std::milli>> durations;
     durations.reserve(run_times);
     for (std::size_t i = 0; i < run_times; ++i) {
-        std::println("Start {}-{}", i, test_name);
         durations.emplace_back(runnable(test_name, assertion));
-        std::println("Stop {}-{}", i, test_name);
     }
 
     std::sort(durations.begin(), durations.end());

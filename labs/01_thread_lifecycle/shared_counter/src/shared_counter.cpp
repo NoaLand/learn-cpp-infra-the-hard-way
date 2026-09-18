@@ -14,11 +14,12 @@ int main() {
     auto unsafe_shared_int_end_ = std::chrono::high_resolution_clock::now();
     std::println("\nStop unsafe shared int\n");
 
-    std::println("Start mutex per increment\n");
+    std::println("Start mutex per increment");
     auto mutex_per_increment_start_ = std::chrono::high_resolution_clock::now();
-    cpp_infra_labs::thread::shared_counter::mutex_per_increment{}.run();
+    auto mutex_per_increment_ = cpp_infra_labs::thread::shared_counter::mutex_per_increment{};
+    mutex_per_increment_.run();
     auto mutex_per_increment_end_ = std::chrono::high_resolution_clock::now();
-    std::println("\nStop mutex per increment\n");
+    std::println("Stop mutex per increment with counter: {}\n", mutex_per_increment_.counter);
 
     std::println("Start atomic shared int");
     auto atomic_shared_int_start_ = std::chrono::high_resolution_clock::now();

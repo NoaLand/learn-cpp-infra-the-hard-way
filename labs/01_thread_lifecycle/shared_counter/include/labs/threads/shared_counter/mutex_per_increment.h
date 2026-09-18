@@ -10,6 +10,7 @@ namespace cpp_infra_labs::thread::shared_counter {
 
         int counter{};
     private:
+        void worker(std::string name);
         std::mutex increment_mutex;
     };
 }

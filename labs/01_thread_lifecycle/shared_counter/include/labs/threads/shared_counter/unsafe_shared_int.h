@@ -7,5 +7,7 @@ namespace cpp_infra_labs::thread::shared_counter {
         void run() override;
 
         int counter{};
+    private:
+        void worker(std::string name);
     };
 }

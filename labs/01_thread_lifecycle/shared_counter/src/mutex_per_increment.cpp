@@ -16,7 +16,7 @@ namespace cpp_infra_labs::thread::shared_counter {
     }
 
     void mutex_per_increment::worker(std::string name) {
-        for (int i = 0; i < 100000; ++i) {
+        for (int i = 0; i < run_times; ++i) {
             std::lock_guard<std::mutex> lock_guard(increment_mutex);
             ++counter;
         }

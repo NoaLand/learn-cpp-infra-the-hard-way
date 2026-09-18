@@ -21,7 +21,7 @@ namespace cpp_infra_labs::thread::shared_counter {
 
     void local_reduce::worker(std::string name, std::vector<int>& counter_for_each_thread, std::size_t index) {
         int local_sum{};
-        for (int i = 0; i < 100000; ++i) {
+        for (int i = 0; i < run_times; ++i) {
             ++local_sum;
         }
         counter_for_each_thread[index] = local_sum;

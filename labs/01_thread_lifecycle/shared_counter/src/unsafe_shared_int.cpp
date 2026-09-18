@@ -14,7 +14,7 @@ namespace cpp_infra_labs::thread::shared_counter {
     }
 
     void unsafe_shared_int::worker(std::string name) {
-        for (int i = 0; i < 100000; ++i) {
+        for (int i = 0; i < run_times; ++i) {
             ++counter;
         }
     }

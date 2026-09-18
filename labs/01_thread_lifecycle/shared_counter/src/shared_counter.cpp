@@ -1,4 +1,5 @@
 #include <chrono>
+#include <numeric>
 #include <print>
 
 #include "labs/threads/shared_counter/unsafe_shared_int.h"
@@ -27,11 +28,12 @@ int main() {
     auto atomic_shared_int_end_ = std::chrono::high_resolution_clock::now();
     std::println("Stop atomic shared int with counter: {}\n", atomic_shared_int_.counter.load());
 
-    std::println("Start local reduce\n");
+    std::println("Start local reduce");
     auto local_reduce_start_ = std::chrono::high_resolution_clock::now();
-    cpp_infra_labs::thread::shared_counter::local_reduce{}.run();
+    auto local_reduce_ = cpp_infra_labs::thread::shared_counter::local_reduce{};
+    local_reduce_.run();
     auto local_reduce_end_ = std::chrono::high_resolution_clock::now();
-    std::println("\nStop local reduce\n");
+    std::println("Stop local reduce with counter: {}\n", local_reduce_.counter);
 
     std::println("Unsafe shared int duration {}", std::chrono::duration<double, std::milli>(unsafe_shared_int_end_ - unsafe_shared_int_start_));
     std::println("Mutex per increment duration {}", std::chrono::duration<double, std::milli>(mutex_per_increment_end_ - mutex_per_increment_start_));

@@ -1,7 +1,6 @@
 #include "labs/threads/shared_counter/local_reduce.h"
 
 #include <numeric>
-#include <print>
 #include <vector>
 
 namespace cpp_infra_labs::thread::shared_counter {
@@ -9,12 +8,10 @@ namespace cpp_infra_labs::thread::shared_counter {
         std::vector<int> counter_for_each_thread(worker_names.size());
         auto worker = [&counter_for_each_thread](std::string name, std::size_t index){
             int local_sum{};
-            std::println("{} start working", name);
             for (int i = 0; i < 100000; ++i) {
                 ++local_sum;
             }
             counter_for_each_thread[index] = local_sum;
-            std::println("{} stop working", name);
         };
 
         thread_pool.reserve(worker_names.size());
@@ -27,6 +24,6 @@ namespace cpp_infra_labs::thread::shared_counter {
             thread.join();
         }
 
-        std::println("counter: {}", std::accumulate(counter_for_each_thread.begin(), counter_for_each_thread.end(), 0));
+        counter = std::accumulate(counter_for_each_thread.begin(), counter_for_each_thread.end(), 0);
     }
 }

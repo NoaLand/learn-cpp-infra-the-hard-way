@@ -16,10 +16,10 @@ concept shared_counter = std::derived_from<T, cpp_infra_labs::thread::shared_cou
 template<shared_counter T>
 void benchmark(std::string test_name, const std::function<int(const T&)>& get_counter) {
     std::println("Start {}", test_name);
-    auto test_start_ = std::chrono::high_resolution_clock::now();
+    auto test_start_ = std::chrono::steady_clock::now();
     auto test_case_ = T{};
     test_case_.run();
-    auto test_end_ = std::chrono::high_resolution_clock::now();
+    auto test_end_ = std::chrono::steady_clock::now();
     std::println("Stop {} with counter: {}", test_name, get_counter(test_case_));
     std::println("{} duration {}\n", test_name, std::chrono::duration<double, std::milli>(test_end_ - test_start_));
 }

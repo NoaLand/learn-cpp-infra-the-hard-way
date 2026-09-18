@@ -1,4 +1,7 @@
+#include "labs/threads/shared_counter/shared_counter.h"
 #include <chrono>
+#include <concepts>
+#include <functional>
 #include <print>
 
 #include "labs/threads/shared_counter/unsafe_shared_int.h"
@@ -6,40 +9,37 @@
 #include "labs/threads/shared_counter/atomic_shared_int.h"
 #include "labs/threads/shared_counter/local_reduce.h"
 
+template<typename T>
+concept shared_counter = std::derived_from<T, cpp_infra_labs::thread::shared_counter::shared_counter>
+    && std::default_initializable<T>;
+
+template<shared_counter T>
+void benchmark(std::string test_name, const std::function<int(const T&)>& get_counter) {
+    std::println("Start {}", test_name);
+    auto test_start_ = std::chrono::high_resolution_clock::now();
+    auto test_case_ = T{};
+    test_case_.run();
+    auto test_end_ = std::chrono::high_resolution_clock::now();
+    std::println("Stop {} with counter: {}", test_name, get_counter(test_case_));
+    std::println("{} duration {}\n", test_name, std::chrono::duration<double, std::milli>(test_end_ - test_start_));
+}
 
 int main() {
-    std::println("Start unsafe shared int");
-    auto unsafe_shared_int_start_ = std::chrono::high_resolution_clock::now();
-    auto unsafe_shared_int_ = cpp_infra_labs::thread::shared_counter::unsafe_shared_int{};
-    unsafe_shared_int_.run();
-    auto unsafe_shared_int_end_ = std::chrono::high_resolution_clock::now();
-    std::println("Stop unsafe shared int with counter: {}\n", unsafe_shared_int_.counter);
+    benchmark<cpp_infra_labs::thread::shared_counter::unsafe_shared_int>("unsafe shared int", [](const auto& instance){
+        return instance.counter;
+    });
 
-    std::println("Start mutex per increment");
-    auto mutex_per_increment_start_ = std::chrono::high_resolution_clock::now();
-    auto mutex_per_increment_ = cpp_infra_labs::thread::shared_counter::mutex_per_increment{};
-    mutex_per_increment_.run();
-    auto mutex_per_increment_end_ = std::chrono::high_resolution_clock::now();
-    std::println("Stop mutex per increment with counter: {}\n", mutex_per_increment_.counter);
+    benchmark<cpp_infra_labs::thread::shared_counter::mutex_per_increment>("mutex per increment", [](const auto& instance){
+        return instance.counter;
+    });
 
-    std::println("Start atomic shared int");
-    auto atomic_shared_int_start_ = std::chrono::high_resolution_clock::now();
-    auto atomic_shared_int_ = cpp_infra_labs::thread::shared_counter::atomic_shared_int{};
-    atomic_shared_int_.run();
-    auto atomic_shared_int_end_ = std::chrono::high_resolution_clock::now();
-    std::println("Stop atomic shared int with counter: {}\n", atomic_shared_int_.counter.load());
+    benchmark<cpp_infra_labs::thread::shared_counter::atomic_shared_int>("atomic shared int", [](const auto& instance){
+        return instance.counter.load();
+    });
 
-    std::println("Start local reduce");
-    auto local_reduce_start_ = std::chrono::high_resolution_clock::now();
-    auto local_reduce_ = cpp_infra_labs::thread::shared_counter::local_reduce{};
-    local_reduce_.run();
-    auto local_reduce_end_ = std::chrono::high_resolution_clock::now();
-    std::println("Stop local reduce with counter: {}\n", local_reduce_.counter);
-
-    std::println("Unsafe shared int duration {}", std::chrono::duration<double, std::milli>(unsafe_shared_int_end_ - unsafe_shared_int_start_));
-    std::println("Mutex per increment duration {}", std::chrono::duration<double, std::milli>(mutex_per_increment_end_ - mutex_per_increment_start_));
-    std::println("Atomic shared int duration {}", std::chrono::duration<double, std::milli>(atomic_shared_int_end_ - atomic_shared_int_start_));
-    std::println("Local reduce duration {}", std::chrono::duration<double, std::milli>(local_reduce_end_ - local_reduce_start_));
+    benchmark<cpp_infra_labs::thread::shared_counter::local_reduce>("local reduce", [](const auto& instance){
+        return instance.counter;
+    });
 
     return 0;
 }

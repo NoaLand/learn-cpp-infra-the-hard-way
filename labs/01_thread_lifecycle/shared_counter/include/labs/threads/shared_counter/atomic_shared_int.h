@@ -5,5 +5,7 @@
 namespace cpp_infra_labs::thread::shared_counter {
     struct atomic_shared_int : public shared_counter {
         void run() override;
+
+        std::atomic<int> counter{};
     };
 }

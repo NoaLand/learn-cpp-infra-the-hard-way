@@ -20,11 +20,12 @@ int main() {
     auto mutex_per_increment_end_ = std::chrono::high_resolution_clock::now();
     std::println("\nStop mutex per increment\n");
 
-    std::println("Start atomic shared int\n");
+    std::println("Start atomic shared int");
     auto atomic_shared_int_start_ = std::chrono::high_resolution_clock::now();
-    cpp_infra_labs::thread::shared_counter::atomic_shared_int{}.run();
+    auto atomic_shared_int_ = cpp_infra_labs::thread::shared_counter::atomic_shared_int{};
+    atomic_shared_int_.run();
     auto atomic_shared_int_end_ = std::chrono::high_resolution_clock::now();
-    std::println("\nStop atomic shared int\n");
+    std::println("Stop atomic shared int with counter: {}\n", atomic_shared_int_.counter.load());
 
     std::println("Start local reduce\n");
     auto local_reduce_start_ = std::chrono::high_resolution_clock::now();

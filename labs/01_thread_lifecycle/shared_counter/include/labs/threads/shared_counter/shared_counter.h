@@ -15,5 +15,6 @@ namespace cpp_infra_labs::thread::shared_counter {
         std::array<std::string, 4> worker_names{"alpha", "beta", "charlie", "delta"};
         std::vector<std::thread> thread_pool;
         std::size_t run_times{100000};
+        std::size_t expected{run_times * worker_names.size()};
     };
 }

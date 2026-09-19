@@ -72,6 +72,10 @@ int main(int argc, char* argv[]) {
         benchmark<cpp_infra_labs::thread::shared_counter::false_sharing_reduce>("[false sharing reduce]", [](const auto& instance){
             assert(instance.counter == instance.expected);
         });
+    } else if (param == "padded_reduce") {
+        benchmark<cpp_infra_labs::thread::shared_counter::padded_reduce>("[padded reduce]", [](const auto& instance){
+            assert(instance.counter == instance.expected);
+        });
     } else if (param == "all") {
         benchmark<cpp_infra_labs::thread::shared_counter::unsafe_shared_int>("[unsafe shared int]", [](const auto& instance){
             std::println("data race with counter: {}", instance.counter);
@@ -90,6 +94,10 @@ int main(int argc, char* argv[]) {
         });
 
         benchmark<cpp_infra_labs::thread::shared_counter::false_sharing_reduce>("[false sharing reduce]", [](const auto& instance){
+            assert(instance.counter == instance.expected);
+        });
+
+        benchmark<cpp_infra_labs::thread::shared_counter::padded_reduce>("[padded reduce]", [](const auto& instance){
             assert(instance.counter == instance.expected);
         });
     } else {

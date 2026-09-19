@@ -48,4 +48,28 @@ namespace cpp_infra_labs::thread::shared_counter {
             ++counter_for_each_thread[index];
         }
     }
+
+    void padded_reduce::run() {
+        thread_pool.reserve(worker_names.size());
+
+        std::vector<padded_counter> counter_for_each_thread(worker_names.size());
+        for (std::size_t i = 0; i < worker_names.size(); ++i) {
+            thread_pool.emplace_back(&padded_reduce::worker, this, worker_names[i], std::ref(counter_for_each_thread), i);
+        }
+
+        for (auto& thread : thread_pool) {
+            thread.join();
+        }
+
+        counter = std::accumulate(counter_for_each_thread.begin(), counter_for_each_thread.end(), 0, [](const auto& l, const auto& r){
+                return l + r.value;
+        });
+    }
+
+    void padded_reduce::worker(std::string name, std::vector<padded_counter>& counter_for_each_thread, std::size_t index) {
+        int local_sum{};
+        for (int i = 0; i < run_times; ++i) {
+            ++(counter_for_each_thread[index].value);
+        }
+    }
 }

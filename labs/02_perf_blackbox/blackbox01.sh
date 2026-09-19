@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+SOURCE_FILE="${SCRIPT_DIR}/.blackbox01.cpp"
+OUTPUT_FILE="${SCRIPT_DIR}/blackbox01"
+
+cleanup() {
+    rm -f "${SOURCE_FILE}"
+}
+
+trap cleanup EXIT
+
+cat <<'EOF' | base64 -d > "${SOURCE_FILE}"
+I2luY2x1ZGUgPGFycmF5PgojaW5jbHVkZSA8Y2Vycm5vPgojaW5jbHVkZSA8Y3N0ZGRlZj4KI2luY2x1ZGUgPGNzdGRpbnQ+CiNpbmNsdWRlIDxjc3RyaW5nPgojaW5jbHVkZSA8ZmN0bC5oPgojaW5jbHVkZSA8aW9zdHJlYW0+CiNpbmNsdWRlIDxzdGRleGNlcHQ+CiNpbmNsdWRlIDx1bmlzdGQuaD4KCmludCBtYWluKCkgewogICAgY29uc3RleHByIHN0ZDo6c2l6ZV90IGl0ZXJhdGlvbnMgPSAyNTAwMDA7CiAgICBzdGQ6OmFycmF5PGNoYXIsIDY0PiBwYXlsb2Fke307CiAgICBmb3IgKHN0ZDo6c2l6ZV90IGkgPSAwOyBpIDwgcGF5bG9hZC5zaXplKCk7ICsraSkgewogICAgICAgIHBheWxvYWRbaV0gPSBzdGF0aWNfY2FzdDxjaGFyPignQScgKyAoaSAlIDI2KSk7CiAgICB9CgogICAgc3RkOjp1aW50NjRfdCBjb21wbGV0ZWQgPSAwOwoKICAgIGZvciAoc3RkOjpzaXplX3QgaSA9IDA7IGkgPCBpdGVyYXRpb25zOyArK2kpIHsKICAgICAgICBjb25zdCBpbnQgZmQgPSA6Om9wZW4oIi9kZXYvbnVsbCIsIE9fV1JPTkxZIHwgT19DTE9FWEVDKTsKICAgICAgICBpZiAoZmQgPCAwKSB7CiAgICAgICAgICAgIHRocm93IHN0ZDo6cnVudGltZV9lcnJvcihzdGQ6OnN0cmVycm9yKGVycm5vKSk7CiAgICAgICAgfQoKICAgICAgICBjb25zdCBhdXRvIHdyaXR0ZW4gPSA6OndyaXRlKGZkLCBwYXlsb2FkLmRhdGEoKSwgcGF5bG9hZC5zaXplKCkpOwoKICAgICAgICBpZiAod3JpdHRlbiAhPSBzdGF0aWNfY2FzdDxzc2l6ZV90PihwYXlsb2FkLnNpemUoKSkpIHsKICAgICAgICAgICAgY29uc3QgaW50IHNhdmVkX2Vycm5vID0gZXJybm87CiAgICAgICAgICAgIDo6Y2xvc2UoZmQpOwogICAgICAgICAgICB0aHJvdyBzdGQ6OnJ1bnRpbWVfZXJyb3Ioc3RkOjpzdHJlcnJvcihzYXZlZF9lcnJvKSk7CiAgICAgICAgfQoKICAgICAgICBpZiAoOjpjbG9zZShmZCkgIT0gMCkgewogICAgICAgICAgICB0aHJvdyBzdGQ6OnJ1bnRpbWVfZXJyb3Ioc3RkOjpzdHJlcnJvcihlcnJubykpOwogICAgICAgIH0KCiAgICAgICAgKytjb21wbGV0ZWQ7CiAgICB9CgogICAgc3RkOjpjb3V0IDw8ICJjb21wbGV0ZWQ9IiA8PCBjb21wbGV0ZWQgPDwgJ1xuJzsKICAgIHJldHVybiAwOwp9Cg==
+EOF
+
+clang++ \
+    -std=c++23 \
+    -g \
+    "${SOURCE_FILE}" \
+    -o "${OUTPUT_FILE}"
+
+echo "Built: ${OUTPUT_FILE}"
+echo "Do not inspect the generated source. Start profiling the executable."

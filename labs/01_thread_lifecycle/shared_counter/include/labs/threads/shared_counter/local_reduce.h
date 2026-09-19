@@ -12,4 +12,12 @@ namespace cpp_infra_labs::thread::shared_counter {
     private:
         void worker(std::string name, std::vector<int>& counter_for_each_thread, std::size_t index);
     };
+
+    struct false_sharing_reduce : public shared_counter {
+        void run() override;
+
+        int counter{};
+    private:
+        void worker(std::string name, std::vector<int>& counter_for_each_thread, std::size_t index);
+    };
 }

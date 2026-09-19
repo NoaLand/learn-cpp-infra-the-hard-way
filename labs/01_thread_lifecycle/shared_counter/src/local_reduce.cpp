@@ -26,4 +26,26 @@ namespace cpp_infra_labs::thread::shared_counter {
         }
         counter_for_each_thread[index] = local_sum;
     }
+
+    void false_sharing_reduce::run() {
+        thread_pool.reserve(worker_names.size());
+
+        std::vector<int> counter_for_each_thread(worker_names.size());
+        for (std::size_t i = 0; i < worker_names.size(); ++i) {
+            thread_pool.emplace_back(&false_sharing_reduce::worker, this, worker_names[i], std::ref(counter_for_each_thread), i);
+        }
+
+        for (auto& thread : thread_pool) {
+            thread.join();
+        }
+
+        counter = std::accumulate(counter_for_each_thread.begin(), counter_for_each_thread.end(), 0);
+    }
+
+    void false_sharing_reduce::worker(std::string name, std::vector<int>& counter_for_each_thread, std::size_t index) {
+        int local_sum{};
+        for (int i = 0; i < run_times; ++i) {
+            ++counter_for_each_thread[index];
+        }
+    }
 }

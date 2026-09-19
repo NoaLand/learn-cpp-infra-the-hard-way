@@ -31,8 +31,9 @@ completing the investigation.
 
 ## Command line tool set for now
 1. `perf stat`
-2. `perf stat -e`
+2. `perf stat -e <events>`
 3. `perf record`
 4. `perf report`
-5. `strace -c`
-6. `strace -f -c`
+5. `perf annotate`
+6. `strace -c`
+7. `strace -f -c`

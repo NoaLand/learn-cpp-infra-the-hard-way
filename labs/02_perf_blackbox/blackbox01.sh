@@ -12,8 +12,52 @@ cleanup() {
 
 trap cleanup EXIT
 
-cat <<'EOF' | base64 -d > "${SOURCE_FILE}"
-I2luY2x1ZGUgPGFycmF5PgojaW5jbHVkZSA8Y2Vycm5vPgojaW5jbHVkZSA8Y3N0ZGRlZj4KI2luY2x1ZGUgPGNzdGRpbnQ+CiNpbmNsdWRlIDxjc3RyaW5nPgojaW5jbHVkZSA8ZmN0bC5oPgojaW5jbHVkZSA8aW9zdHJlYW0+CiNpbmNsdWRlIDxzdGRleGNlcHQ+CiNpbmNsdWRlIDx1bmlzdGQuaD4KCmludCBtYWluKCkgewogICAgY29uc3RleHByIHN0ZDo6c2l6ZV90IGl0ZXJhdGlvbnMgPSAyNTAwMDA7CiAgICBzdGQ6OmFycmF5PGNoYXIsIDY0PiBwYXlsb2Fke307CiAgICBmb3IgKHN0ZDo6c2l6ZV90IGkgPSAwOyBpIDwgcGF5bG9hZC5zaXplKCk7ICsraSkgewogICAgICAgIHBheWxvYWRbaV0gPSBzdGF0aWNfY2FzdDxjaGFyPignQScgKyAoaSAlIDI2KSk7CiAgICB9CgogICAgc3RkOjp1aW50NjRfdCBjb21wbGV0ZWQgPSAwOwoKICAgIGZvciAoc3RkOjpzaXplX3QgaSA9IDA7IGkgPCBpdGVyYXRpb25zOyArK2kpIHsKICAgICAgICBjb25zdCBpbnQgZmQgPSA6Om9wZW4oIi9kZXYvbnVsbCIsIE9fV1JPTkxZIHwgT19DTE9FWEVDKTsKICAgICAgICBpZiAoZmQgPCAwKSB7CiAgICAgICAgICAgIHRocm93IHN0ZDo6cnVudGltZV9lcnJvcihzdGQ6OnN0cmVycm9yKGVycm5vKSk7CiAgICAgICAgfQoKICAgICAgICBjb25zdCBhdXRvIHdyaXR0ZW4gPSA6OndyaXRlKGZkLCBwYXlsb2FkLmRhdGEoKSwgcGF5bG9hZC5zaXplKCkpOwoKICAgICAgICBpZiAod3JpdHRlbiAhPSBzdGF0aWNfY2FzdDxzc2l6ZV90PihwYXlsb2FkLnNpemUoKSkpIHsKICAgICAgICAgICAgY29uc3QgaW50IHNhdmVkX2Vycm5vID0gZXJybm87CiAgICAgICAgICAgIDo6Y2xvc2UoZmQpOwogICAgICAgICAgICB0aHJvdyBzdGQ6OnJ1bnRpbWVfZXJyb3Ioc3RkOjpzdHJlcnJvcihzYXZlZF9lcnJvKSk7CiAgICAgICAgfQoKICAgICAgICBpZiAoOjpjbG9zZShmZCkgIT0gMCkgewogICAgICAgICAgICB0aHJvdyBzdGQ6OnJ1bnRpbWVfZXJyb3Ioc3RkOjpzdHJlcnJvcihlcnJubykpOwogICAgICAgIH0KCiAgICAgICAgKytjb21wbGV0ZWQ7CiAgICB9CgogICAgc3RkOjpjb3V0IDw8ICJjb21wbGV0ZWQ9IiA8PCBjb21wbGV0ZWQgPDwgJ1xuJzsKICAgIHJldHVybiAwOwp9Cg==
+cat > "${SOURCE_FILE}" <<'EOF'
+#include <array>
+#include <cerrno>
+#include <cstddef>
+#include <cstdint>
+#include <cstring>
+#include <fcntl.h>
+#include <iostream>
+#include <stdexcept>
+#include <unistd.h>
+
+int main() {
+    constexpr std::size_t iterations = 250000;
+
+    std::array<char, 64> payload{};
+    for (std::size_t i = 0; i < payload.size(); ++i) {
+        payload[i] = static_cast<char>('A' + (i % 26));
+    }
+
+    std::uint64_t completed = 0;
+
+    for (std::size_t i = 0; i < iterations; ++i) {
+        const int fd = ::open("/dev/null", O_WRONLY | O_CLOEXEC);
+        if (fd < 0) {
+            throw std::runtime_error(std::strerror(errno));
+        }
+
+        const auto written =
+            ::write(fd, payload.data(), payload.size());
+
+        if (written != static_cast<ssize_t>(payload.size())) {
+            const int saved_errno = errno;
+            ::close(fd);
+            throw std::runtime_error(std::strerror(saved_errno));
+        }
+
+        if (::close(fd) != 0) {
+            throw std::runtime_error(std::strerror(errno));
+        }
+
+        ++completed;
+    }
+
+    std::cout << "completed=" << completed << '\n';
+    return 0;
+}
 EOF
 
 clang++ \

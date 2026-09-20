@@ -1,5 +1,9 @@
 add_executable(learn_cpp_the_hard_way_lab_01_waiting_coordination_busy_wait
     busy_wait.cpp
 )
-
 add_executable(cpp:infra::lab::01::waiting_coordination::busy_wait ALIAS learn_cpp_the_hard_way_lab_01_waiting_coordination_busy_wait)
+
+add_executable(learn_cpp_the_hard_way_lab_01_waiting_coordination_condition_variable
+    condition_var.cpp
+)
+add_executable(cpp:infra::lab::01::waiting_coordination::condition_variable ALIAS learn_cpp_the_hard_way_lab_01_waiting_coordination_condition_variable)

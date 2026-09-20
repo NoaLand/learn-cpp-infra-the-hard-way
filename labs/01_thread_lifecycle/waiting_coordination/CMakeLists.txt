@@ -7,3 +7,8 @@ add_executable(learn_cpp_the_hard_way_lab_01_condition_variable
     condition_var.cpp
 )
 add_executable(cpp:infra::lab::01::condition_variable ALIAS learn_cpp_the_hard_way_lab_01_condition_variable)
+
+add_executable(learn_cpp_the_hard_way_lab_01_multi_worker_cv
+    multi_worker_cv.cpp
+)
+add_executable(cpp:infra::lab::01::multi_worker_cv ALIAS learn_cpp_the_hard_way_lab_01_multi_worker_cv)

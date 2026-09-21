@@ -11,8 +11,9 @@ int main() {
     std::size_t in_flight{};
     std::mutex task_queue_mutex_;
     std::condition_variable work_cv;
+    std::condition_variable monitor_cv;
 
-    auto producer = [&task_queue, &is_producer_done, &task_queue_mutex_, &work_cv](){
+    auto producer = [&task_queue, &is_producer_done, &task_queue_mutex_, &work_cv, &monitor_cv](){
         for (std::size_t task = 0; task < 100; ++task) {
             {
                 std::lock_guard<std::mutex> lock_guard{task_queue_mutex_};
@@ -29,9 +30,10 @@ int main() {
             is_producer_done = true;
         }
         work_cv.notify_all();
+        monitor_cv.notify_all();
     };
 
-    auto consumer = [&task_queue_mutex_, &work_cv, &is_producer_done, &task_queue, &in_flight](std::string name){
+    auto consumer = [&task_queue_mutex_, &work_cv, &monitor_cv, &is_producer_done, &task_queue, &in_flight](std::string name){
         std::size_t working_time{};
         while (true) {
             int task{};
@@ -50,7 +52,7 @@ int main() {
                 task_queue.pop();
                 ++in_flight;
                 ++working_time;
-                work_cv.notify_one();
+                monitor_cv.notify_one();
             }
             using namespace std::chrono_literals;
             std::this_thread::sleep_for(30ms);
@@ -58,19 +60,19 @@ int main() {
             {
                 std::lock_guard<std::mutex> lock_guard{task_queue_mutex_};
                 --in_flight;
-                work_cv.notify_one();
+                monitor_cv.notify_one();
             }
         }
     };
 
-    auto monitor = [&task_queue_mutex_, &work_cv, &is_producer_done, &task_queue, &in_flight](){
+    auto monitor = [&task_queue_mutex_, &monitor_cv, &is_producer_done, &task_queue, &in_flight](){
         int old{};
 
         while (true) {
             {
                 std::unique_lock<std::mutex> lock{task_queue_mutex_};
-                work_cv.wait(lock, [&is_producer_done, &in_flight, &old,&task_queue]{
-                    return is_producer_done || in_flight != old || !task_queue.empty();
+                monitor_cv.wait(lock, [&is_producer_done, &in_flight, &old,&task_queue]{
+                    return (is_producer_done && task_queue.empty() && in_flight == 0) || (old != in_flight);
                 });
 
                 if (is_producer_done && task_queue.empty() && in_flight == 0) {

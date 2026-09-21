@@ -10,15 +10,15 @@ int main() {
     bool is_producer_done{};
     std::size_t in_flight{};
     std::mutex task_queue_mutex_;
-    std::condition_variable cv;
+    std::condition_variable work_cv;
 
-    auto producer = [&task_queue, &is_producer_done, &task_queue_mutex_, &cv](){
+    auto producer = [&task_queue, &is_producer_done, &task_queue_mutex_, &work_cv](){
         for (std::size_t task = 0; task < 100; ++task) {
             {
                 std::lock_guard<std::mutex> lock_guard{task_queue_mutex_};
                 task_queue.push(task);
             }
-            cv.notify_one();
+            work_cv.notify_one();
 
             using namespace std::chrono_literals;
             std::this_thread::sleep_for(10ms);
@@ -28,16 +28,16 @@ int main() {
             std::lock_guard<std::mutex> lock_guard{task_queue_mutex_};
             is_producer_done = true;
         }
-        cv.notify_all();
+        work_cv.notify_all();
     };
 
-    auto consumer = [&task_queue_mutex_, &cv, &is_producer_done, &task_queue, &in_flight](std::string name){
+    auto consumer = [&task_queue_mutex_, &work_cv, &is_producer_done, &task_queue, &in_flight](std::string name){
         std::size_t working_time{};
         while (true) {
             int task{};
             {
                 std::unique_lock<std::mutex> lock{task_queue_mutex_};
-                cv.wait(lock, [&is_producer_done, &task_queue]{
+                work_cv.wait(lock, [&is_producer_done, &task_queue]{
                     return is_producer_done || !task_queue.empty();
                 });
 
@@ -50,7 +50,7 @@ int main() {
                 task_queue.pop();
                 ++in_flight;
                 ++working_time;
-                cv.notify_one();
+                work_cv.notify_one();
             }
             using namespace std::chrono_literals;
             std::this_thread::sleep_for(30ms);
@@ -58,18 +58,18 @@ int main() {
             {
                 std::lock_guard<std::mutex> lock_guard{task_queue_mutex_};
                 --in_flight;
-                cv.notify_one();
+                work_cv.notify_one();
             }
         }
     };
 
-    auto monitor = [&task_queue_mutex_, &cv, &is_producer_done, &task_queue, &in_flight](){
+    auto monitor = [&task_queue_mutex_, &work_cv, &is_producer_done, &task_queue, &in_flight](){
         int old{};
 
         while (true) {
             {
                 std::unique_lock<std::mutex> lock{task_queue_mutex_};
-                cv.wait(lock, [&is_producer_done, &in_flight, &old,&task_queue]{
+                work_cv.wait(lock, [&is_producer_done, &in_flight, &old,&task_queue]{
                     return is_producer_done || in_flight != old || !task_queue.empty();
                 });
 

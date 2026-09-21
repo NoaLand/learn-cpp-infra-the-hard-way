@@ -48,10 +48,9 @@ int main() {
                 task = task_queue.front();
                 task_queue.pop();
                 ++working_time;
-                
-                using namespace std::chrono_literals;
-                std::this_thread::sleep_for(15ms);
             }
+            using namespace std::chrono_literals;
+            std::this_thread::sleep_for(15ms);
             std::println("{} is consuming: {}", name, task);
         }
     };

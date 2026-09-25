@@ -16,6 +16,7 @@ For each exercise:
 
    ```bash
    ./blackbox01.sh
+   ```
 
 2. Do not inspect, decode, modify, or otherwise recover the implementation before
 completing the investigation.

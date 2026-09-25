@@ -1,0 +1,4 @@
+add_executable(learn_cpp_the_hard_way_lab_01_semaphore_and_bounded_concurrency_cv
+    cv.cpp
+)
+add_executable(cpp:infra::lab::01::semaphore_and_bounded_concurrency::cv_version ALIAS learn_cpp_the_hard_way_lab_01_semaphore_and_bounded_concurrency_cv)

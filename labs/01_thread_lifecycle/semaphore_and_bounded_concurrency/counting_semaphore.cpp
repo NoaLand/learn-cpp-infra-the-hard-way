@@ -5,6 +5,30 @@
 #include <thread>
 #include <vector>
 
+template<typename T>
+concept semaphore = requires (T& slots) {
+    { slots.acquire() };
+    { slots.release() };
+};
+
+template<semaphore T>
+class slots_guard {
+public:
+    explicit slots_guard(T& slots) : slots_{slots} {
+        slots.acquire();
+    }
+
+    slots_guard(const slots_guard&) = delete;
+    slots_guard& operator= (const slots_guard&) = delete;
+
+    ~slots_guard() {
+        slots_.release();
+    }
+
+private:
+    T& slots_;
+};
+
 int main() {
     std::counting_semaphore<3> slots{3};
     std::mutex worker_mutex_;
@@ -22,7 +46,7 @@ int main() {
     };
 
     auto worker = [&slots, &worker_mutex_, &in_flight](std::string name){
-        slots.acquire();
+        slots_guard guard{slots};
         {
             std::lock_guard<std::mutex> lock_guard{worker_mutex_};
             ++in_flight;
@@ -37,7 +61,6 @@ int main() {
             --in_flight;
             std::println("{} leaving, in flight={}", name, in_flight);
         }
-        slots.release();
     };
 
     std::vector<std::jthread> thread_pool;

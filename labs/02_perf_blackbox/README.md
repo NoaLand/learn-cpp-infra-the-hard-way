@@ -37,3 +37,5 @@ completing the investigation.
 5. `perf annotate`
 6. `strace -c`
 7. `strace -f -c`
+8. `strace -f -e trace=<event> -o <log> <exe>` -- dump all log in one file
+9. `strace -ff -tt -e trace=<event> -o <log_pattern> <exe>` -- split logs according to thread and add timestamp with one log file name pattern

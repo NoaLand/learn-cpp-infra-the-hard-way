@@ -1,0 +1,4 @@
+add_executable(learn_cpp_the_hard_way_lab_01_future_promise_async_basic_future_promise
+    basic_future_promise.cpp
+)
+add_executable(cpp:infra::lab::01::future_promise_async::basic_future_promise ALIAS learn_cpp_the_hard_way_lab_01_future_promise_async_basic_future_promise)

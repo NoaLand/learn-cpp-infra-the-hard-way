@@ -7,3 +7,8 @@ add_executable(learn_cpp_the_hard_way_lab_01_semaphore_and_bounded_concurrency_c
     counting_semaphore.cpp
 )
 add_executable(cpp:infra::lab::01::semaphore_and_bounded_concurrency::counting_semaphore_version ALIAS learn_cpp_the_hard_way_lab_01_semaphore_and_bounded_concurrency_counting_semaphore)
+
+add_executable(learn_cpp_the_hard_way_lab_01_semaphore_and_bounded_concurrency_handoff
+    handoff.cpp
+)
+add_executable(cpp:infra::lab::01::semaphore_and_bounded_concurrency::handoff ALIAS learn_cpp_the_hard_way_lab_01_semaphore_and_bounded_concurrency_handoff)

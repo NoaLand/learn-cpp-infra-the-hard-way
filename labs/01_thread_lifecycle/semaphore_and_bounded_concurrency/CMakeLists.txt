@@ -12,3 +12,8 @@ add_executable(learn_cpp_the_hard_way_lab_01_semaphore_and_bounded_concurrency_h
     handoff.cpp
 )
 add_executable(cpp:infra::lab::01::semaphore_and_bounded_concurrency::handoff ALIAS learn_cpp_the_hard_way_lab_01_semaphore_and_bounded_concurrency_handoff)
+
+add_executable(learn_cpp_the_hard_way_lab_01_semaphore_and_bounded_concurrency_ping_pong
+    ping_pong.cpp
+)
+add_executable(cpp:infra::lab::01::semaphore_and_bounded_concurrency::ping_pong ALIAS learn_cpp_the_hard_way_lab_01_semaphore_and_bounded_concurrency_ping_pong)

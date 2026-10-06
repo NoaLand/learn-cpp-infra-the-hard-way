@@ -12,3 +12,8 @@ add_executable(learn_cpp_the_hard_way_lab_01_future_promise_async_broken_promise
     broken_promise.cpp
 )
 add_executable(cpp:infra::lab::01::future_promise_async::broken_promise ALIAS learn_cpp_the_hard_way_lab_01_future_promise_async_broken_promise)
+
+add_executable(learn_cpp_the_hard_way_lab_01_future_promise_async_async
+    async.cpp
+)
+add_executable(cpp:infra::lab::01::future_promise_async::async ALIAS learn_cpp_the_hard_way_lab_01_future_promise_async_async)

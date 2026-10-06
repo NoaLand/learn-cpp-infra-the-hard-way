@@ -7,3 +7,8 @@ add_executable(learn_cpp_the_hard_way_lab_01_future_promise_async_exception_prop
     exception_propagation.cpp
 )
 add_executable(cpp:infra::lab::01::future_promise_async::exception_propagation ALIAS learn_cpp_the_hard_way_lab_01_future_promise_async_exception_propagation)
+
+add_executable(learn_cpp_the_hard_way_lab_01_future_promise_async_broken_promise
+    broken_promise.cpp
+)
+add_executable(cpp:infra::lab::01::future_promise_async::broken_promise ALIAS learn_cpp_the_hard_way_lab_01_future_promise_async_broken_promise)

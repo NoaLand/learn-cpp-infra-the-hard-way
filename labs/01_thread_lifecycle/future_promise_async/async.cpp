@@ -63,6 +63,17 @@ void with_deferred_launch_policy() {
     std::println("{} - get worker output: {}", std::this_thread::get_id(), res.get());
 }
 
+void with_async_launch_policy_but_wont_use_future_res() {
+    auto res = std::async(std::launch::async, [](){
+        std::println("{} - start worker", std::this_thread::get_id());
+        using namespace std::chrono_literals;
+        std::this_thread::sleep_for(3s);
+
+        return 42;
+    });
+    std::println("{} - main doing something", std::this_thread::get_id());
+}
+
 int main() {
     std::println("with default launch policy");
     with_default_launch_policy();
@@ -72,6 +83,10 @@ int main() {
 
     std::println("\nwith deferred launch policy");
     with_deferred_launch_policy();
+
+    std::println("\nwith async launch policy but won't use res");
+    with_async_launch_policy_but_wont_use_future_res();
+    std::println("leave test case");
 
     return 0;
 }
